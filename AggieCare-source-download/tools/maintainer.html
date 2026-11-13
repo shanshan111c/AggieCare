@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Aggie Care · 本地维护台</title>
+  <style>
+    :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#17362b;background:#f7f9f5}*{box-sizing:border-box}body{margin:0}header{display:flex;align-items:center;justify-content:space-between;padding:22px max(20px,calc((100vw - 1100px)/2));border-bottom:1px solid #dfe8dd;background:#fff}header b{font-size:20px}header small{display:block;color:#60766b;margin-top:4px}main{max-width:1100px;margin:35px auto;padding:0 20px}.tabs{display:flex;gap:8px;margin-bottom:24px}.tabs button,.action{border:0;border-radius:13px;padding:12px 19px;background:#e7efe8;color:#17362b;font:inherit;font-weight:700;cursor:pointer}.tabs button.active,.action{background:#174c39;color:#fff}.panel{display:none}.panel.active{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.card{background:#fff;border:1px solid #e2e9e0;border-radius:20px;padding:22px;box-shadow:0 8px 26px #17362b0a}h1{font-size:32px;margin:0 0 6px}h2{font-size:19px;margin:0 0 16px}p{line-height:1.5;color:#60766b}label{display:block;font-size:13px;font-weight:700;margin:15px 0 6px}input,textarea,select{width:100%;border:1px solid #cbd9ce;border-radius:10px;padding:11px 12px;font:inherit;background:#fff;color:#17362b}textarea{min-height:88px;resize:vertical}.row{display:flex;gap:10px;align-items:center}.row>*{flex:1}.muted{font-size:12px;color:#708379}.notice{padding:13px 15px;background:#edf4ed;border-radius:12px;margin:20px 0}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:#f1f6ef;border-radius:15px;padding:18px}.stat strong{display:block;font-size:27px}.stat span{font-size:12px;color:#60766b}.bars{display:flex;align-items:end;gap:4px;height:165px;margin:16px 0 4px;border-bottom:1px solid #cbd9ce}.bars i{flex:1;min-width:4px;background:#76aa8a;border-radius:4px 4px 0 0}.table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}.table th,.table td{text-align:left;padding:10px;border-bottom:1px solid #e5ebe4}.table th{color:#60766b}#message{margin-left:12px;font-size:13px}@media(max-width:750px){.grid,.stats{grid-template-columns:1fr}header{padding:18px 20px}}
+  </style>
+</head>
+<body>
+  <header><div><b>Aggie Care · 维护台</b><small>仅在本机运行，不会公开部署到网站</small></div><span class="muted">127.0.0.1</span></header>
+  <main>
+    <div class="tabs"><button class="active" data-tab="editor">UI 编辑</button><button data-tab="monitor">后台监控</button></div>
+    <section id="editor" class="panel active">
+      <h1>UI 编辑</h1><p>修改主页标题、说明、搜索提示及设置页横幅。保存后会更新源码；网站需重新构建和发布才会改变。</p>
+      <div class="grid">
+        <div class="card"><h2>主页文案</h2><label for="language">语言</label><select id="language"></select><label for="live">顶部小标题</label><input id="live"><div class="row"><div><label for="titleA">标题第一行</label><input id="titleA"></div><div><label for="titleB">标题第二行</label><input id="titleB"></div></div><label for="subtitle">说明文字</label><textarea id="subtitle"></textarea><label for="placeholder">搜索框提示</label><input id="placeholder"></div>
+        <div class="card"><h2>设置页公告</h2><label for="bannerText">滚动横幅文字</label><input id="bannerText"><label for="posterLabel">海报标签</label><input id="posterLabel"><label for="posterImage">海报图片路径</label><input id="posterImage" placeholder="/test-poster-1.jpeg"><p class="muted">图片放进 public/，这里填写以 / 开头的文件名；关闭海报不会删除横幅。</p><div class="notice">服务地点、营业时间和医疗信息仍在 <code>app/page.tsx</code>；修改前请核对官方来源。</div><button class="action" id="save">保存到源码</button><span id="message" role="status"></span></div>
+      </div>
+    </section>
+    <section id="monitor" class="panel">
+      <h1>后台监控</h1><p>导入 <code>usage_daily</code> 的 CSV 或 JSON 导出查看每日总量。本站只记录匿名汇总次数，不保存搜索词、IP 或位置。统计文件只在当前浏览器内解析，不上传。</p>
+      <div class="card"><label for="analyticsFile">选择统计文件</label><input id="analyticsFile" type="file" accept=".csv,.json,text/csv,application/json"><div class="stats" id="stats" style="margin-top:18px"></div><div class="bars" id="bars"></div><div id="tables"></div><p class="muted">CSV 列：day,kind,target,count。可从 Sites 的 D1 表 <code>usage_daily</code> 导出；不要把真实统计文件提交到 GitHub。</p></div>
+    </section>
+  </main>
+  <script>
+    const labels={en:'English',zh:'中文',es:'Español',ko:'한국어',ja:'日本語',hi:'हिन्दी',fr:'Français'};
+    const fields=['live','titleA','titleB','subtitle','placeholder'];
+    const language=document.querySelector('#language');
+    let content;
+    for(const [code,label] of Object.entries(labels)){const option=document.createElement('option');option.value=code;option.textContent=label;language.append(option)}
+    function collectHero(code=language.value){if(!content)return;const current=content.hero[code];for(const field of fields)current[field]=document.getElementById(field).value}
+    function showHero(){const current=content.hero[language.value];for(const field of fields)document.getElementById(field).value=current[field]||''}
+    let previousLanguage='en';
+    language.addEventListener('change',()=>{if(content){collectHero(previousLanguage);showHero()}previousLanguage=language.value});
+    document.querySelectorAll('.tabs button').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.tabs button,.panel').forEach(el=>el.classList.remove('active'));button.classList.add('active');document.getElementById(button.dataset.tab).classList.add('active')}));
+    fetch('/api/content').then(response=>response.json()).then(value=>{content=value;showHero();for(const field of ['bannerText','posterLabel','posterImage'])document.getElementById(field).value=content.announcement[field]||''}).catch(()=>{document.getElementById('message').textContent='读取失败，请检查本地服务'});
+    document.getElementById('save').addEventListener('click',async()=>{collectHero();for(const field of ['bannerText','posterLabel','posterImage'])content.announcement[field]=document.getElementById(field).value;const message=document.getElementById('message');try{const response=await fetch('/api/content',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(content)});if(!response.ok)throw Error((await response.json()).error);message.textContent='已保存；发布后网站才会更新'}catch(error){message.textContent='保存失败：'+error.message}});
+    function csvRows(text){const lines=text.trim().split(/\r?\n/);const columns=lines.shift().split(',').map(s=>s.trim().replace(/^"|"$/g,''));return lines.map(line=>{const cells=line.match(/(?:"(?:[^"]|"")*"|[^,]*)(?:,|$)/g)?.map(cell=>cell.replace(/,$/,'').replace(/^"|"$/g,'').replace(/""/g,'"'))||[];return Object.fromEntries(columns.map((column,index)=>[column,cells[index]||'']))})}
+    function table(headers,rows){const table=document.createElement('table');table.className='table';const head=table.createTHead().insertRow();for(const header of headers){const cell=document.createElement('th');cell.textContent=header;head.append(cell)}const body=table.createTBody();for(const row of rows){const tr=body.insertRow();for(const value of row){const td=tr.insertCell();td.textContent=value}}return table}
+    function renderAnalytics(rows){const valid=rows.filter(row=>/^\d{4}-\d{2}-\d{2}$/.test(row.day)&&['click','search'].includes(row.kind)&&Number.isFinite(Number(row.count)));const total=kind=>valid.filter(row=>row.kind===kind).reduce((sum,row)=>sum+Number(row.count),0);const stats=document.getElementById('stats');stats.replaceChildren();for(const [name,value] of [['搜索次数',total('search')],['点击次数',total('click')],['统计天数',new Set(valid.map(row=>row.day)).size]]){const card=document.createElement('div');card.className='stat';const strong=document.createElement('strong');strong.textContent=value.toLocaleString();const span=document.createElement('span');span.textContent=name;card.append(strong,span);stats.append(card)}const days=new Map();const targets=new Map();for(const row of valid){days.set(row.day,(days.get(row.day)||0)+Number(row.count));targets.set(row.target,(targets.get(row.target)||0)+Number(row.count))}const ordered=[...days].sort(([a],[b])=>a.localeCompare(b));const max=Math.max(1,...ordered.map(([,count])=>count));const bars=document.getElementById('bars');bars.replaceChildren();for(const [day,count] of ordered.slice(-30)){const bar=document.createElement('i');bar.style.height=`${Math.max(3,count/max*100)}%`;bar.title=`${day}: ${count}`;bars.append(bar)}const tables=document.getElementById('tables');tables.replaceChildren(table(['日期','总事件数'],ordered.slice(-30).reverse()),table(['目标','次数'],[...targets].sort((a,b)=>b[1]-a[1]).map(([target,count])=>[target,count])))}
+    document.getElementById('analyticsFile').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;try{const text=await file.text();const parsed=file.name.toLowerCase().endsWith('.json')?JSON.parse(text):csvRows(text);renderAnalytics(Array.isArray(parsed)?parsed:parsed.results||[])}catch(error){document.getElementById('tables').textContent='文件无法读取：'+error.message}});
+  </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "announcement": {
+    "bannerText": "testtestesttest",
+    "posterLabel": "TEST 1",
+    "posterImage": "/test-poster-1.jpeg"
+  },
+  "hero": {
+    "en": {
+      "live": "Live campus resource guide",
+      "titleA": "What do you need",
+      "titleB": "right now?",
+      "subtitle": "Fast access to free food, basic needs, health, safety, and mental-health support at UC Davis.",
+      "placeholder": "Try “free food open now”"
+    },
+    "zh": {
+      "live": "校园资源实时指南",
+      "titleA": "你现在需要",
+      "titleB": "什么？",
+      "subtitle": "快速找到 UC Davis 免费食物、基本需求、健康、安全和心理支持资源。",
+      "placeholder": "试试“现在有免费食物吗”"
+    },
+    "es": {
+      "live": "Guía de recursos del campus",
+      "titleA": "¿Qué necesitas",
+      "titleB": "ahora?",
+      "subtitle": "Acceso rápido a comida gratis, necesidades básicas, salud, seguridad y apoyo mental en UC Davis.",
+      "placeholder": "Prueba “comida gratis abierta”"
+    },
+    "ko": {
+      "live": "캠퍼스 리소스 가이드",
+      "titleA": "지금 무엇이",
+      "titleB": "필요한가요?",
+      "subtitle": "UC Davis의 무료 음식, 기본 필요, 건강, 안전, 정신건강 지원을 빠르게 찾습니다.",
+      "placeholder": "“무료 음식 지금” 검색"
+    },
+    "ja": {
+      "live": "キャンパス資源ガイド",
+      "titleA": "今なにが",
+      "titleB": "必要ですか？",
+      "subtitle": "UC Davis の無料食料、基本支援、健康、安全、メンタルヘルス資源を素早く探せます。",
+      "placeholder": "「無料 食べ物 今」で検索"
+    },
+    "hi": {
+      "live": "कैंपस संसाधन गाइड",
+      "titleA": "आपको अभी",
+      "titleB": "क्या चाहिए?",
+      "subtitle": "UC Davis में मुफ्त भोजन, बुनियादी ज़रूरत, स्वास्थ्य, सुरक्षा और मानसिक सहायता जल्दी खोजें।",
+      "placeholder": "“free food open now” खोजें"
+    },
+    "fr": {
+      "live": "Guide des ressources campus",
+      "titleA": "De quoi as-tu",
+      "titleB": "besoin maintenant ?",
+      "subtitle": "Accès rapide à la nourriture gratuite, besoins essentiels, santé, sécurité et soutien mental à UC Davis.",
+      "placeholder": "Essayez « nourriture gratuite ouverte »"
+    }
+  }
+}
